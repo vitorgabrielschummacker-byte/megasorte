@@ -33,7 +33,7 @@ h2{font-size:clamp(1.55rem,4vw,2.2rem);font-weight:800;margin-bottom:22px}
 .grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
 .card{background:var(--cinza);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
 .card{background:#fff;border:1px solid var(--linha)}
-.card .foto{aspect-ratio:16/10;background:#d5ddf3 center/cover no-repeat}
+.card .foto{display:block;width:100%;height:auto}
 .card .corpo{padding:22px;display:flex;flex-direction:column;gap:12px;flex:1}
 .tag{align-self:flex-start;font-size:.78rem;font-weight:600;padding:4px 10px;border-radius:99px;background:#fff;color:var(--azul)}
 .tag.promo{background:var(--azul);color:#fff}
@@ -81,23 +81,6 @@ nav{padding-top:calc(16px + env(safe-area-inset-top))}
 .btn{display:block;width:100%;padding:15px 20px}
 @media (min-width:640px){.btn{display:inline-block;width:auto}.card .btn{width:100%}}
 .timer div{flex:1;min-width:0}
-/* ===== painel ===== */
-#admin{display:none;background:#f7f9ff;border-top:6px solid var(--verde)}
-#admin.on{display:block}
-.adm-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:8px}
-.adm-top h2{margin:0}
-.aviso{background:#fff;border:2px solid var(--linha);border-radius:14px;padding:14px 16px;font-size:.9rem;color:var(--suave);margin-bottom:20px}
-.adm-item{background:#fff;border:2px solid var(--linha);border-radius:18px;padding:20px;margin-bottom:18px}
-.adm-item h3{font-size:1.1rem;margin-bottom:14px}
-.campos{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-.campos .full{grid-column:1/-1}
-label{font-size:.8rem;font-weight:600;display:grid;gap:4px}
-label small{font-weight:400;color:var(--suave)}
-input,textarea,select{font:inherit;padding:10px;border:2px solid #cfd6ee;border-radius:10px;width:100%;background:#fff;color:var(--texto)}
-textarea{min-height:84px;resize:vertical}
-.thumb{width:100%;max-width:240px;aspect-ratio:16/10;border-radius:10px;background:#d5ddf3 center/cover no-repeat}
-.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-#msg{margin-top:10px;color:var(--verde);font-weight:600}
 @media (prefers-reduced-motion:no-preference){.hero h1{animation:sobe .6s ease-out both}@keyframes sobe{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}}
 </style>
 </head>
@@ -143,21 +126,6 @@ textarea{min-height:84px;resize:vertical}
   </section>
 </main>
 
-<section id="admin">
-  <div class="wrap">
-    <div class="adm-top">
-      <h2>Painel do administrador</h2>
-      <div class="row" style="margin:0">
-        <button class="btn peq" id="add" type="button">+ Nova campanha</button>
-        <button class="btn peq sec" id="copiar" type="button">Copiar dados</button>
-      </div>
-    </div>
-    <div class="aviso">Edite, confira o resultado na página e clique em <b>Copiar dados</b>. Cole no lugar de <code>const DADOS</code> no arquivo index.html do GitHub. Até colar lá, só você vê as mudanças. Para <b>promoção comercial</b>, o botão de compra só aparece quando o número da autorização e o link de pagamento do produto estiverem preenchidos.</div>
-    <div id="lista"></div>
-    <p id="msg"></p>
-  </div>
-</section>
-
 <footer>
   <div class="wrap">
     <p>© <span id="ano"></span> Mega Sorte BR. Não é patrocinado, administrado ou associado ao Instagram.</p>
@@ -165,10 +133,9 @@ textarea{min-height:84px;resize:vertical}
 </footer>
 
 <script>
-/* ================== EDITE AQUI (ou use o painel em seusite/#admin) ================== */
+/* ================== EDITE AQUI ================== */
 const DADOS = {
   instagram: "https://www.instagram.com/megasortebr.oficial/",
-  senhaPainel: "troque-esta-senha",
   palavras: ["Prêmios","Pix","Celulares","Surpresas"],   /* palavras que se alternam no topo */
   faixa: ["🍀 Mega Sorte BR","🍀 Mega Sorte BR","🍀 Mega Sorte BR","🍀 Mega Sorte BR"],   /* faixa que rola */
   campanhas: [
@@ -177,7 +144,7 @@ const DADOS = {
       tipo: "gratuito",                 /* "gratuito" ou "promocao" */
       nome: "Primeiro Sorteio Mega Sorte BR",
       descricao: "Siga o perfil, curta a publicação e comente marcando 2 amigos.",
-      foto: "iphone.png",
+      foto: "iphone.png",      /* só o nome da imagem (paisagem), na mesma pasta do index.html */
       premio1: "Prêmio do 1º lugar | Iphone 17",
       premio2: "Prêmio do 2º lugar | 50 R$",
       premio3: "",
@@ -191,13 +158,14 @@ const DADOS = {
     /* Só ganhadores reais. Ex.: { nome:"Maria S.", cidade:"Salvador/BA", premio:"Celular", data:"2026-11-01" } */
   ]
 };
-/* ===================================================================================== */
+/* ================================================= */
 
-let dados = JSON.parse(JSON.stringify(DADOS));
+const dados = DADOS;
 const $ = s => document.querySelector(s);
 const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = iso => iso ? new Date(iso).toLocaleString('pt-BR',{dateStyle:'long',timeStyle:'short'}) : '';
 const brl = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const imgOk = u => /^(https?:\/\/|data:image\/|[\w\-.\/]+$)/i.test(u||'');
 const urlOk = u => /^https?:\/\//i.test(u||'');
 
 function card(c, aberta){
@@ -211,7 +179,7 @@ function card(c, aberta){
     else acao = `<a class="btn" href="${esc(urlOk(c.link)?c.link:dados.instagram)}" target="_blank" rel="noopener">Participar no Instagram</a>`;
   }
   return `<article class="card ${aberta?'':'enc'}" data-fim="${esc(c.fim)}">
-    <div class="foto" ${urlOk(c.foto)||/^data:image/.test(c.foto||'')?`style="background-image:url('${esc(c.foto)}')"`:''} role="img" aria-label="${esc(c.nome)}"></div>
+    ${c.foto?`<img class="foto" src="${esc(c.foto)}" alt="${esc(c.nome)}" loading="lazy">`:''}
     <div class="corpo">
       <span class="tag ${promo?'promo':''}">${promo?'Promoção comercial':'Sorteio gratuito'}</span>
       <h3>${esc(c.nome)}</h3>
@@ -255,83 +223,6 @@ function tick(){
 }
 setInterval(tick,1000);
 
-/* ================== painel ================== */
-function renderAdmin(){
-  $('#lista').innerHTML = dados.campanhas.map((c,i)=>{
-    const promo = c.tipo==='promocao';
-    const f = (k,l,extra='',t='text',cls='') => `<label class="${cls}">${l}<input type="${t}" data-i="${i}" data-k="${k}" value="${esc(c[k])}" ${extra}></label>`;
-    return `<div class="adm-item">
-      <h3>Campanha ${i+1}${c.nome?': '+esc(c.nome):''}</h3>
-      <div class="campos">
-        <label>Tipo
-          <select data-i="${i}" data-k="tipo">
-            <option value="gratuito" ${!promo?'selected':''}>Sorteio gratuito</option>
-            <option value="promocao" ${promo?'selected':''}>Promoção comercial (com produto)</option>
-          </select>
-        </label>
-        ${f('nome','Nome da campanha','','text','full')}
-        <label class="full">Descrição<textarea data-i="${i}" data-k="descricao">${esc(c.descricao)}</textarea></label>
-        <div class="full">
-          <label>Foto <small>cole o link de uma imagem, ou envie um arquivo</small>
-            <input type="text" data-i="${i}" data-k="foto" value="${(c.foto||'').startsWith('data:')?'':esc(c.foto)}" placeholder="https://... ou imagens/foto.jpg">
-          </label>
-          <input type="file" accept="image/*" data-up="${i}" style="margin-top:8px">
-          ${c.foto?`<div class="thumb" style="background-image:url('${esc(c.foto)}');margin-top:8px"></div>`:''}
-        </div>
-        ${f('premio1','Prêmio do 1º lugar')}
-        ${f('premio2','Prêmio do 2º lugar')}
-        ${f('premio3','Prêmio do 3º lugar')}
-        ${f('fim','Prazo: data e hora do resultado','','datetime-local')}
-        <label class="full">Regulamento<textarea data-i="${i}" data-k="regras">${esc(c.regras)}</textarea></label>
-        ${promo ? `
-          ${f('produto','Produto ou serviço vendido')}
-          ${f('preco','Preço do produto (R$)','step="0.01" min="0"','number')}
-          ${f('cuponsPorCompra','Cupons por compra','min="1"','number')}
-          ${f('autorizacao','Nº da autorização da promoção',' placeholder="obrigatório para liberar a compra"')}
-          ${f('checkout','Link de pagamento do produto',' placeholder="https://..."','text','full')}
-        ` : f('link','Link da publicação no Instagram','','text','full')}
-      </div>
-      <div class="row"><button class="btn peq perigo" type="button" data-del="${i}">Apagar campanha</button></div>
-    </div>`;
-  }).join('') || '<div class="vazio">Nenhuma campanha. Clique em "+ Nova campanha".</div>';
-}
-function abrirPainel(){
-  const p = prompt('Senha do painel:');
-  if(p !== DADOS.senhaPainel){ alert('Senha incorreta.'); return; }
-  $('#admin').classList.add('on'); renderAdmin(); $('#admin').scrollIntoView();
-}
-$('#lista').addEventListener('input', e=>{
-  const i = e.target.dataset.i; if(i===undefined) return;
-  dados.campanhas[i][e.target.dataset.k] = e.target.value;
-  if(e.target.dataset.k==='tipo') renderAdmin();
-  render();
-});
-$('#lista').addEventListener('change', e=>{
-  const i = e.target.dataset.up; if(i===undefined || !e.target.files[0]) return;
-  const img = new Image(), rd = new FileReader();
-  rd.onload = () => { img.onload = () => {
-    const w = Math.min(800, img.width), h = img.height * w / img.width;
-    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
-    cv.getContext('2d').drawImage(img,0,0,w,h);
-    dados.campanhas[i].foto = cv.toDataURL('image/jpeg',.8);
-    renderAdmin(); render();
-  }; img.src = rd.result; };
-  rd.readAsDataURL(e.target.files[0]);
-});
-$('#lista').addEventListener('click', e=>{
-  if(e.target.dataset.del===undefined) return;
-  if(confirm('Apagar esta campanha?')){ dados.campanhas.splice(+e.target.dataset.del,1); renderAdmin(); render(); }
-});
-$('#add').onclick = ()=>{
-  dados.campanhas.push({id:Date.now(),tipo:'gratuito',nome:'Nova campanha',descricao:'',foto:'',premio1:'',premio2:'',premio3:'',fim:'',link:dados.instagram,regras:'',produto:'',preco:'',cuponsPorCompra:1,autorizacao:'',checkout:''});
-  renderAdmin(); render();
-};
-$('#copiar').onclick = async ()=>{
-  const txt = 'const DADOS = ' + JSON.stringify(dados,null,2) + ';';
-  try{ await navigator.clipboard.writeText(txt); $('#msg').textContent='Copiado! Cole no index.html do GitHub.'; }
-  catch{ prompt('Copie o texto abaixo:', txt); }
-};
-
 
 function animar(){
   const el=$('#palavra'), p=dados.palavras&&dados.palavras.length?dados.palavras:['prêmios'];
@@ -350,8 +241,6 @@ function animar(){
 animar();
 $('#ano').textContent = new Date().getFullYear();
 render();
-if(location.hash==='#admin') abrirPainel();
-window.addEventListener('hashchange',()=>{ if(location.hash==='#admin') abrirPainel(); });
 </script>
 </body>
 </html>

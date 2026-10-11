@@ -2,8 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mega Sorte BR | Sorteios e Promoções</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1D4ED8">
+<title>Mega Sorte BR | Bora ganhar</title>
 <meta name="description" content="Sorteios gratuitos e promoções com regras claras.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -19,8 +20,6 @@ header{background:var(--azul);color:#fff}
 nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
 .logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.25rem;text-decoration:none;color:#fff}
 nav a.ig{font-weight:600;text-decoration:none;color:#fff;font-size:.95rem;border:2px solid #fff;padding:7px 14px;border-radius:99px}
-.hero{padding:18px 0 56px}
-.hero h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.05;font-weight:800}
 .hero p{margin-top:16px;max-width:48ch;font-size:1.08rem;opacity:.92}
 .btn{display:inline-block;background:var(--verde);color:#fff;font-weight:600;text-decoration:none;padding:13px 24px;border-radius:12px;border:0;font-size:1rem;cursor:pointer;font-family:inherit;text-align:center}
 .btn:hover{filter:brightness(1.08)}
@@ -63,6 +62,25 @@ details p{margin-top:8px;white-space:pre-line}
 .regras{background:var(--cinza);border-radius:20px;padding:26px}
 .regras ul{padding-left:20px;display:grid;gap:8px}
 footer{background:var(--texto);color:#cfd6ee;padding:30px 0;font-size:.86rem}
+
+.hero{padding:10px 0 44px}
+.hero .pre{font-size:1.05rem;font-weight:600;opacity:.9}
+.hero h1{font-size:clamp(3.2rem,17vw,6rem);line-height:1;font-weight:800;margin-top:4px;min-height:1.1em;overflow:hidden}
+.hero .sub{margin-top:14px;font-size:1rem;opacity:.9}
+.palavra{display:inline-block;color:#fff;background:linear-gradient(transparent 62%,var(--verde) 62%);transition:transform .35s ease,opacity .35s ease}
+.palavra.sai{transform:translateY(-60%);opacity:0}
+.palavra.entra{transform:translateY(60%);opacity:0;transition:none}
+.ticker{background:var(--texto);color:#fff;overflow:hidden;white-space:nowrap;font-weight:600;font-size:.9rem}
+.ticker div{display:inline-block;padding:10px 0;animation:rola 28s linear infinite}
+.ticker span{margin:0 22px}
+@keyframes rola{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker div{animation:none}.palavra{transition:none}}
+body{padding-bottom:env(safe-area-inset-bottom)}
+nav{padding-top:calc(16px + env(safe-area-inset-top))}
+.grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.btn{display:block;width:100%;padding:15px 20px}
+@media (min-width:640px){.btn{display:inline-block;width:auto}.card .btn{width:100%}}
+.timer div{flex:1;min-width:0}
 /* ===== painel ===== */
 #admin{display:none;background:#f7f9ff;border-top:6px solid var(--verde)}
 #admin.on{display:block}
@@ -91,9 +109,14 @@ textarea{min-height:84px;resize:vertical}
       <a class="logo" href="#">🍀 Mega Sorte BR</a>
       <a class="ig" id="igTop" href="#" target="_blank" rel="noopener">Instagram</a>
     </nav>
-    <div class="hero"><h1>Sorteios e promoções</h1></div>
+    <div class="hero">
+      <p class="pre">Participe e concorra a</p>
+      <h1><span id="palavra" class="palavra">prêmios</span></h1>
+      <p class="sub">Sorteios com regra clara e resultado em vídeo.</p>
+    </div>
   </div>
 </header>
+<div class="ticker" aria-hidden="true"><div id="ticker"></div></div>
 
 <main>
   <section id="campanhas" style="padding-top:36px">
@@ -146,6 +169,8 @@ textarea{min-height:84px;resize:vertical}
 const DADOS = {
   instagram: "https://www.instagram.com/SEU_PERFIL/",
   senhaPainel: "troque-esta-senha",
+  palavras: ["prêmios","Pix","celulares","surpresas"],   /* palavras que se alternam no topo */
+  faixa: ["🍀 Mega Sorte BR","Participe pelo Instagram","Resultado em vídeo","Regras claras"],   /* faixa que rola */
   campanhas: [
     {
       id: 1,
@@ -307,6 +332,22 @@ $('#copiar').onclick = async ()=>{
   catch{ prompt('Copie o texto abaixo:', txt); }
 };
 
+
+function animar(){
+  const el=$('#palavra'), p=dados.palavras&&dados.palavras.length?dados.palavras:['prêmios'];
+  el.textContent=p[0];
+  const t=$('#ticker'); const f=(dados.faixa||[]).map(x=>`<span>${esc(x)}</span>`).join('');
+  t.innerHTML=f+f+f+f;
+  if(p.length<2||matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  let i=0;
+  setInterval(()=>{
+    el.classList.add('sai');
+    setTimeout(()=>{ i=(i+1)%p.length; el.textContent=p[i]; el.classList.remove('sai'); el.classList.add('entra');
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{ el.style.transition='transform .35s ease,opacity .35s ease'; el.classList.remove('entra'); setTimeout(()=>el.style.transition='',400); }));
+    },350);
+  },2200);
+}
+animar();
 $('#ano').textContent = new Date().getFullYear();
 render();
 if(location.hash==='#admin') abrirPainel();

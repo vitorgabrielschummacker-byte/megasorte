@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mega Sorte BR | Sorteios e Promoções</title>
+<meta name="description" content="Sorteios gratuitos e promoções com regras claras.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--azul:#1D4ED8;--verde:#16A34A;--branco:#fff;--cinza:#eef2fb;--texto:#0f1a3d;--suave:#5a6585;--linha:#dbe2f5}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;color:var(--texto);background:#fff;line-height:1.55}
+h1,h2,h3,.num{font-family:'Bricolage Grotesque',Inter,system-ui,sans-serif}
+:focus-visible{outline:3px solid var(--verde);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{background:var(--azul);color:#fff}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.25rem;text-decoration:none;color:#fff}
+nav a.ig{font-weight:600;text-decoration:none;color:#fff;font-size:.95rem;border:2px solid #fff;padding:7px 14px;border-radius:99px}
+.hero{padding:18px 0 56px}
+.hero h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.05;font-weight:800}
+.hero p{margin-top:16px;max-width:48ch;font-size:1.08rem;opacity:.92}
+.btn{display:inline-block;background:var(--verde);color:#fff;font-weight:600;text-decoration:none;padding:13px 24px;border-radius:12px;border:0;font-size:1rem;cursor:pointer;font-family:inherit;text-align:center}
+.btn:hover{filter:brightness(1.08)}
+.btn.sec{background:#fff;border:2px solid var(--azul);color:var(--azul)}
+.btn.off{background:#c7cfe6;color:#4a5578;cursor:not-allowed;filter:none}
+.btn.peq{padding:9px 15px;font-size:.88rem}
+.btn.perigo{background:#b91c1c}
+.hero .btn{margin-top:24px}
+section{padding:0 0 48px}
+h2{font-size:clamp(1.55rem,4vw,2.2rem);font-weight:800;margin-bottom:22px}
+.grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.card{background:var(--cinza);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+.card{background:#fff;border:1px solid var(--linha)}
+.card .foto{aspect-ratio:16/10;background:#d5ddf3 center/cover no-repeat}
+.card .corpo{padding:22px;display:flex;flex-direction:column;gap:12px;flex:1}
+.tag{align-self:flex-start;font-size:.78rem;font-weight:600;padding:4px 10px;border-radius:99px;background:#fff;color:var(--azul)}
+.tag.promo{background:var(--azul);color:#fff}
+.card h3{font-size:1.35rem;line-height:1.15}
+.desc{color:var(--suave);font-size:.95rem}
+.premios{list-style:none;padding:0;display:grid;gap:5px}
+.premios li{display:flex;gap:10px}
+.premios b{color:var(--azul);min-width:28px}
+.produto{background:#fff;border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.produto strong{font-family:'Bricolage Grotesque',sans-serif;font-size:1.3rem;color:var(--verde)}
+.aut{font-size:.85rem;font-weight:600}
+.aut.ok{color:var(--verde)}.aut.nao{color:#a16207}
+.timer{display:flex;gap:8px}
+.timer div{background:var(--azul);color:#fff;border-radius:12px;padding:7px 4px;min-width:60px;text-align:center}
+.timer .num{font-size:1.6rem;font-weight:800;display:block;line-height:1.1}
+.timer small{font-size:.7rem;opacity:.85}
+.fim{color:var(--suave);font-size:.88rem}
+.card.enc{opacity:.75}
+details{font-size:.9rem;color:var(--suave)}
+summary{cursor:pointer;font-weight:600;color:var(--azul)}
+details p{margin-top:8px;white-space:pre-line}
+.passos{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.passo{border-left:4px solid var(--verde);padding:4px 0 4px 16px}
+.passo b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem}
+.vazio{background:var(--cinza);border-radius:20px;padding:26px;color:var(--suave)}
+.regras{background:var(--cinza);border-radius:20px;padding:26px}
+.regras ul{padding-left:20px;display:grid;gap:8px}
+footer{background:var(--texto);color:#cfd6ee;padding:30px 0;font-size:.86rem}
+/* ===== painel ===== */
+#admin{display:none;background:#f7f9ff;border-top:6px solid var(--verde)}
+#admin.on{display:block}
+.adm-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+.adm-top h2{margin:0}
+.aviso{background:#fff;border:2px solid var(--linha);border-radius:14px;padding:14px 16px;font-size:.9rem;color:var(--suave);margin-bottom:20px}
+.adm-item{background:#fff;border:2px solid var(--linha);border-radius:18px;padding:20px;margin-bottom:18px}
+.adm-item h3{font-size:1.1rem;margin-bottom:14px}
+.campos{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.campos .full{grid-column:1/-1}
+label{font-size:.8rem;font-weight:600;display:grid;gap:4px}
+label small{font-weight:400;color:var(--suave)}
+input,textarea,select{font:inherit;padding:10px;border:2px solid #cfd6ee;border-radius:10px;width:100%;background:#fff;color:var(--texto)}
+textarea{min-height:84px;resize:vertical}
+.thumb{width:100%;max-width:240px;aspect-ratio:16/10;border-radius:10px;background:#d5ddf3 center/cover no-repeat}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+#msg{margin-top:10px;color:var(--verde);font-weight:600}
+@media (prefers-reduced-motion:no-preference){.hero h1{animation:sobe .6s ease-out both}@keyframes sobe{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="#">🍀 Mega Sorte BR</a>
+      <a class="ig" id="igTop" href="#" target="_blank" rel="noopener">Instagram</a>
+    </nav>
+    <div class="hero"><h1>Sorteios e promoções</h1></div>
+  </div>
+</header>
+
+<main>
+  <section id="campanhas" style="padding-top:36px">
+    <div class="wrap">
+      
+      <div class="grid" id="abertas"></div>
+    </div>
+  </section>
+
+
+  <section id="secGan" style="padding-top:0">
+    <div class="wrap">
+      <h2 style="font-size:1.2rem">Ganhadores</h2>
+      <div id="ganhadores"></div>
+    </div>
+  </section>
+
+
+  <section id="encerradas" style="padding-top:0">
+    <div class="wrap">
+      <h2 style="font-size:1.2rem;color:var(--suave)">Encerradas</h2>
+      <div class="grid" id="fechadas"></div>
+    </div>
+  </section>
+</main>
+
+<section id="admin">
+  <div class="wrap">
+    <div class="adm-top">
+      <h2>Painel do administrador</h2>
+      <div class="row" style="margin:0">
+        <button class="btn peq" id="add" type="button">+ Nova campanha</button>
+        <button class="btn peq sec" id="copiar" type="button">Copiar dados</button>
+      </div>
+    </div>
+    <div class="aviso">Edite, confira o resultado na página e clique em <b>Copiar dados</b>. Cole no lugar de <code>const DADOS</code> no arquivo index.html do GitHub. Até colar lá, só você vê as mudanças. Para <b>promoção comercial</b>, o botão de compra só aparece quando o número da autorização e o link de pagamento do produto estiverem preenchidos.</div>
+    <div id="lista"></div>
+    <p id="msg"></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>© <span id="ano"></span> Mega Sorte BR. Não é patrocinado, administrado ou associado ao Instagram.</p>
+  </div>
+</footer>
+
+<script>
+/* ================== EDITE AQUI (ou use o painel em seusite/#admin) ================== */
+const DADOS = {
+  instagram: "https://www.instagram.com/SEU_PERFIL/",
+  senhaPainel: "troque-esta-senha",
+  campanhas: [
+    {
+      id: 1,
+      tipo: "gratuito",                 /* "gratuito" ou "promocao" */
+      nome: "Primeiro sorteio Mega Sorte BR",
+      descricao: "Siga o perfil, curta a publicação e comente marcando 2 amigos.",
+      foto: "",
+      premio1: "Prêmio do 1º lugar",
+      premio2: "Prêmio do 2º lugar",
+      premio3: "",
+      fim: "2026-10-25T20:00",
+      link: "https://www.instagram.com/SEU_PERFIL/",
+      regras: "Participação gratuita. Maiores de 18 anos. Resultado por sorteador online, gravado em vídeo. O ganhador tem 48h para responder ao direct.",
+      produto: "", preco: "", cuponsPorCompra: 1, autorizacao: "", checkout: ""
+    }
+  ],
+  ganhadores: [
+    /* Só ganhadores reais. Ex.: { nome:"Maria S.", cidade:"Salvador/BA", premio:"Celular", data:"2026-11-01" } */
+  ]
+};
+/* ===================================================================================== */
+
+let dados = JSON.parse(JSON.stringify(DADOS));
+const $ = s => document.querySelector(s);
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = iso => iso ? new Date(iso).toLocaleString('pt-BR',{dateStyle:'long',timeStyle:'short'}) : '';
+const brl = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const urlOk = u => /^https?:\/\//i.test(u||'');
+
+function card(c, aberta){
+  const promo = c.tipo === 'promocao';
+  const podeComprar = promo && c.autorizacao && urlOk(c.checkout);
+  let acao = '';
+  if(aberta){
+    if(promo) acao = podeComprar
+      ? `<a class="btn" href="${esc(c.checkout)}" target="_blank" rel="noopener">Comprar ${esc(c.produto||'produto')}</a>`
+      : `<span class="btn off">Em breve</span>`;
+    else acao = `<a class="btn" href="${esc(urlOk(c.link)?c.link:dados.instagram)}" target="_blank" rel="noopener">Participar no Instagram</a>`;
+  }
+  return `<article class="card ${aberta?'':'enc'}" data-fim="${esc(c.fim)}">
+    <div class="foto" ${urlOk(c.foto)||/^data:image/.test(c.foto||'')?`style="background-image:url('${esc(c.foto)}')"`:''} role="img" aria-label="${esc(c.nome)}"></div>
+    <div class="corpo">
+      <span class="tag ${promo?'promo':''}">${promo?'Promoção comercial':'Sorteio gratuito'}</span>
+      <h3>${esc(c.nome)}</h3>
+      ${c.descricao?`<p class="desc">${esc(c.descricao)}</p>`:''}
+      <ul class="premios">
+        ${c.premio1?`<li><b>1º</b> ${esc(c.premio1)}</li>`:''}
+        ${c.premio2?`<li><b>2º</b> ${esc(c.premio2)}</li>`:''}
+        ${c.premio3?`<li><b>3º</b> ${esc(c.premio3)}</li>`:''}
+      </ul>
+      ${promo?`<div class="produto"><span>${esc(c.produto||'Produto')}<br><small class="fim">${Number(c.cuponsPorCompra)||1} cupom(ns) por compra</small></span><strong>${brl(c.preco)}</strong></div>
+      <p class="aut ${c.autorizacao?'ok':'nao'}">${c.autorizacao?'Autorização nº '+esc(c.autorizacao):'Aguardando autorização'}</p>`:''}
+      ${aberta?`<div class="timer"><div><span class="num" data-u="d">00</span><small>dias</small></div><div><span class="num" data-u="h">00</span><small>horas</small></div><div><span class="num" data-u="m">00</span><small>min</small></div><div><span class="num" data-u="s">00</span><small>seg</small></div></div>`:''}
+      <p class="fim">${aberta?'Resultado em ':'Encerrada em '}${fmt(c.fim)}</p>
+      ${c.regras?`<details><summary>Regulamento</summary><p>${esc(c.regras)}</p></details>`:''}
+      ${acao}
+    </div>
+  </article>`;
+}
+
+function render(){
+  const agora = Date.now();
+  const val = c => c.fim && !isNaN(new Date(c.fim));
+  const ab = dados.campanhas.filter(c=>val(c)&&new Date(c.fim)>agora).sort((a,b)=>new Date(a.fim)-new Date(b.fim));
+  const fe = dados.campanhas.filter(c=>val(c)&&new Date(c.fim)<=agora).sort((a,b)=>new Date(b.fim)-new Date(a.fim));
+  $('#abertas').innerHTML = ab.length ? ab.map(c=>card(c,true)).join('') : '<div class="vazio">Nenhuma campanha aberta agora. Siga o Instagram para saber da próxima.</div>';
+  $('#fechadas').innerHTML = fe.map(c=>card(c,false)).join('');
+  $('#encerradas').style.display = fe.length ? '' : 'none';
+  $('#ganhadores').innerHTML = dados.ganhadores.length
+    ? `<div class="grid">${dados.ganhadores.map(g=>`<div class="card"><div class="corpo"><h3>${esc(g.nome)}</h3><p>${esc(g.premio)}</p><p class="fim">${esc(g.cidade)} · ${esc(g.data)}</p></div></div>`).join('')}</div>`
+    : '';
+  $('#secGan').style.display = dados.ganhadores.length ? '' : 'none';
+  $('#igTop').href = dados.instagram;
+  tick();
+}
+function tick(){
+  document.querySelectorAll('#abertas .card[data-fim]').forEach(c=>{
+    const r = Math.max(0, new Date(c.dataset.fim) - Date.now());
+    const v = {d:Math.floor(r/864e5), h:Math.floor(r%864e5/36e5), m:Math.floor(r%36e5/6e4), s:Math.floor(r%6e4/1e3)};
+    for(const k in v){ const e=c.querySelector(`[data-u="${k}"]`); if(e) e.textContent=String(v[k]).padStart(2,'0'); }
+  });
+}
+setInterval(tick,1000);
+
+/* ================== painel ================== */
+function renderAdmin(){
+  $('#lista').innerHTML = dados.campanhas.map((c,i)=>{
+    const promo = c.tipo==='promocao';
+    const f = (k,l,extra='',t='text',cls='') => `<label class="${cls}">${l}<input type="${t}" data-i="${i}" data-k="${k}" value="${esc(c[k])}" ${extra}></label>`;
+    return `<div class="adm-item">
+      <h3>Campanha ${i+1}${c.nome?': '+esc(c.nome):''}</h3>
+      <div class="campos">
+        <label>Tipo
+          <select data-i="${i}" data-k="tipo">
+            <option value="gratuito" ${!promo?'selected':''}>Sorteio gratuito</option>
+            <option value="promocao" ${promo?'selected':''}>Promoção comercial (com produto)</option>
+          </select>
+        </label>
+        ${f('nome','Nome da campanha','','text','full')}
+        <label class="full">Descrição<textarea data-i="${i}" data-k="descricao">${esc(c.descricao)}</textarea></label>
+        <div class="full">
+          <label>Foto <small>cole o link de uma imagem, ou envie um arquivo</small>
+            <input type="text" data-i="${i}" data-k="foto" value="${(c.foto||'').startsWith('data:')?'':esc(c.foto)}" placeholder="https://... ou imagens/foto.jpg">
+          </label>
+          <input type="file" accept="image/*" data-up="${i}" style="margin-top:8px">
+          ${c.foto?`<div class="thumb" style="background-image:url('${esc(c.foto)}');margin-top:8px"></div>`:''}
+        </div>
+        ${f('premio1','Prêmio do 1º lugar')}
+        ${f('premio2','Prêmio do 2º lugar')}
+        ${f('premio3','Prêmio do 3º lugar')}
+        ${f('fim','Prazo: data e hora do resultado','','datetime-local')}
+        <label class="full">Regulamento<textarea data-i="${i}" data-k="regras">${esc(c.regras)}</textarea></label>
+        ${promo ? `
+          ${f('produto','Produto ou serviço vendido')}
+          ${f('preco','Preço do produto (R$)','step="0.01" min="0"','number')}
+          ${f('cuponsPorCompra','Cupons por compra','min="1"','number')}
+          ${f('autorizacao','Nº da autorização da promoção',' placeholder="obrigatório para liberar a compra"')}
+          ${f('checkout','Link de pagamento do produto',' placeholder="https://..."','text','full')}
+        ` : f('link','Link da publicação no Instagram','','text','full')}
+      </div>
+      <div class="row"><button class="btn peq perigo" type="button" data-del="${i}">Apagar campanha</button></div>
+    </div>`;
+  }).join('') || '<div class="vazio">Nenhuma campanha. Clique em "+ Nova campanha".</div>';
+}
+function abrirPainel(){
+  const p = prompt('Senha do painel:');
+  if(p !== DADOS.senhaPainel){ alert('Senha incorreta.'); return; }
+  $('#admin').classList.add('on'); renderAdmin(); $('#admin').scrollIntoView();
+}
+$('#lista').addEventListener('input', e=>{
+  const i = e.target.dataset.i; if(i===undefined) return;
+  dados.campanhas[i][e.target.dataset.k] = e.target.value;
+  if(e.target.dataset.k==='tipo') renderAdmin();
+  render();
+});
+$('#lista').addEventListener('change', e=>{
+  const i = e.target.dataset.up; if(i===undefined || !e.target.files[0]) return;
+  const img = new Image(), rd = new FileReader();
+  rd.onload = () => { img.onload = () => {
+    const w = Math.min(800, img.width), h = img.height * w / img.width;
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    cv.getContext('2d').drawImage(img,0,0,w,h);
+    dados.campanhas[i].foto = cv.toDataURL('image/jpeg',.8);
+    renderAdmin(); render();
+  }; img.src = rd.result; };
+  rd.readAsDataURL(e.target.files[0]);
+});
+$('#lista').addEventListener('click', e=>{
+  if(e.target.dataset.del===undefined) return;
+  if(confirm('Apagar esta campanha?')){ dados.campanhas.splice(+e.target.dataset.del,1); renderAdmin(); render(); }
+});
+$('#add').onclick = ()=>{
+  dados.campanhas.push({id:Date.now(),tipo:'gratuito',nome:'Nova campanha',descricao:'',foto:'',premio1:'',premio2:'',premio3:'',fim:'',link:dados.instagram,regras:'',produto:'',preco:'',cuponsPorCompra:1,autorizacao:'',checkout:''});
+  renderAdmin(); render();
+};
+$('#copiar').onclick = async ()=>{
+  const txt = 'const DADOS = ' + JSON.stringify(dados,null,2) + ';';
+  try{ await navigator.clipboard.writeText(txt); $('#msg').textContent='Copiado! Cole no index.html do GitHub.'; }
+  catch{ prompt('Copie o texto abaixo:', txt); }
+};
+
+$('#ano').textContent = new Date().getFullYear();
+render();
+if(location.hash==='#admin') abrirPainel();
+window.addEventListener('hashchange',()=>{ if(location.hash==='#admin') abrirPainel(); });
+</script>
+</body>
+</html>
